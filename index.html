@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[크루스칼의 마법] 낭비제로(0) 네트워크를 설계하라! | Kruskal's MST Lab</title>
+  <meta name="description" content="수학/과학 축전 체험부스를 위한 크루스칼 알고리즘(Kruskal's Algorithm) 기반 최소 신장 트리(MST) 인터랙티브 웹 애플리케이션">
+  <link rel="stylesheet" href="css/design-tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Bar (IKEA Minimalist Monochrome Layout) -->
+    <header class="header-bar" role="banner">
+      <div class="brand-wrapper">
+        <span class="brand-tag">MATH BOOTH</span>
+        <h1 class="brand-title">[크루스칼의 마법] 낭비제로(0) 네트워크를 설계하라!</h1>
+      </div>
+      <div class="header-controls">
+        <div id="timer-wrapper" class="timer-container" style="display: none;" aria-live="polite">
+          <span>⏱ 남은 시간:</span>
+          <span id="timer-display">01:30</span>
+        </div>
+        <button id="concept-guide-btn" class="btn btn-secondary btn-sm" aria-label="크루스칼 개념도감 열기">📖 크루스칼 개념도감</button>
+        <button id="sound-toggle-btn" class="btn btn-secondary btn-sm" aria-label="사운드 켜기/끄기">🔊 소리 끄기</button>
+        <button id="change-level-btn" class="btn btn-secondary btn-sm" aria-label="학교급 변경">학교급 변경</button>
+      </div>
+    </header>
+
+    <!-- [View 1] Level Selection Screen (초기 진입 화면) -->
+    <main id="level-select-view" class="level-select-container">
+      <!-- [사전 개념 학습 섹션] 크루스칼의 마법이란? (낭비 제로의 원리) -->
+      <section class="kruskal-concept-showcase" aria-label="크루스칼 알고리즘 사전 개념 설명">
+        <div class="showcase-header">
+          <div class="showcase-badge-wrap">
+            <span class="showcase-tag">사전 필수 개념</span>
+            <span class="showcase-subtag">체험 전 3분 완벽 이해</span>
+          </div>
+          <h2 class="showcase-title">🧙‍♂️ 왜 "크루스칼의 마법"일까요? (낭비 제로 네트워크의 원리)</h2>
+          <p class="showcase-desc">
+            모든 지점을 하나로 연결하되, <strong>가장 적은 비용의 길만 골라 중복 루프(사이클)를 0으로 만드는</strong> 
+            수학적 최적화 알고리즘입니다. 1956년 수학자 조셉 크루스칼(Joseph Kruskal)이 고안했습니다.
+          </p>
+        </div>
+
+        <!-- 3 Core Principles Grid -->
+        <div class="showcase-steps-grid">
+          <article class="showcase-step-card">
+            <div class="step-card-num">01</div>
+            <div class="step-card-icon">💰</div>
+            <h3 class="step-card-title">짠돌이 탐욕 선택 (Greedy)</h3>
+            <p class="step-card-text">
+              모든 길의 건설 비용(가중치)을 오름차순으로 정렬한 뒤, <strong>가장 싼 길부터 하나씩</strong> 네트워크에 편입해요!
+            </p>
+            <span class="step-card-tip">규칙: 비용이 낮은 길 1순위 검토</span>
+          </article>
+
+          <article class="showcase-step-card">
+            <div class="step-card-num">02</div>
+            <div class="step-card-icon">🚫</div>
+            <h3 class="step-card-title">빙글빙글 루프 차단 (No Cycle)</h3>
+            <p class="step-card-text">
+              이미 다른 길로 연결된 마을 사이에 또 길을 놓으면 <strong>빙글빙글 갇히는 낭비(사이클)</strong>가 생겨요. 발견 즉시 과감히 버립니다!
+            </p>
+            <span class="step-card-tip">규칙: Disjoint-Set으로 사이클 제외</span>
+          </article>
+
+          <article class="showcase-step-card">
+            <div class="step-card-num">03</div>
+            <div class="step-card-icon">🎯</div>
+            <h3 class="step-card-title">정점 - 1개로 완성 (V - 1)</h3>
+            <p class="step-card-text">
+              마을이 5개면 길은 딱 <strong>4개(N - 1)</strong>만 있으면 모든 마을이 이어져요. 단 하나의 길도 낭비하지 않는 절대적 미니멀리즘!
+            </p>
+            <span class="step-card-tip">규칙: 최소 신장 트리(MST) 완성 조건</span>
+          </article>
+        </div>
+
+        <!-- Real-World Application Inset -->
+        <div class="showcase-realworld-box">
+          <div class="realworld-header">
+            <strong>🌐 우리 주변 어디에 쓰일까요?</strong>
+            <span style="font-size: 12px; color: var(--color-text-muted);">실생활 속 낭비 제로 네트워크</span>
+          </div>
+          <div class="realworld-items">
+            <div class="realworld-item">
+              <strong>⚡ 한국전력 송전탑망</strong>
+              <p>불필요한 고압선 건설을 막아 수조 원의 전력망 공사비를 절감합니다.</p>
+            </div>
+            <div class="realworld-item">
+              <strong>📡 초고속 광통신 & 5G망</strong>
+              <p>신호가 루프를 돌며 무한 반복 충돌(브로드캐스트 스톰)하는 것을 방지합니다.</p>
+            </div>
+            <div class="realworld-item">
+              <strong>🎬 넷플릭스·유튜브 CDN</strong>
+              <p>사용자에게 가장 빠르고 저렴한 서버 연결 경로를 보장합니다.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="level-hero">
+        <h2>수준별 15분 체험 코스를 선택하세요</h2>
+        <p>위 3가지 원리를 기억하며, 나에게 맞는 학교급 체험 코스를 골라보세요!</p>
+      </section>
+
+      <section class="level-cards-grid" aria-label="수준 선택 카드 목록">
+        <!-- Elementary Card -->
+        <article class="level-card" data-level="elementary" tabindex="0" role="button" aria-label="초등학생 코스 선택">
+          <div>
+            <div class="level-card-top">
+              <span class="level-badge">초등학생</span>
+              <span class="level-time-badge">⏱ 약 12~15분</span>
+            </div>
+            <h3 class="level-card-title">숲속 동물마을 길 잇기 탐험</h3>
+            <p class="level-card-subtitle">기초 직관 & 시각적 피드백</p>
+            <p class="level-card-desc">
+              토끼와 다람쥐 마을을 가장 적은 통나무 다리로 이어보세요. 이미 이어진 길을 또 놓으면 빙글빙글 갇히는 사이클이 생겨요!
+            </p>
+            <ul class="level-card-features">
+              <li>친근한 동물 마을 스토리텔링</li>
+              <li>사이클 발생 시 직관적인 에러 애니메이션</li>
+              <li>숫자가 작은 다리부터 고르는 기초 직관 형성</li>
+            </ul>
+          </div>
+          <button class="btn btn-primary" tabindex="-1">초등 코스 시작하기</button>
+        </article>
+
+        <!-- Middle School Card -->
+        <article class="level-card" data-level="middle" tabindex="0" role="button" aria-label="중학생 코스 선택">
+          <div>
+            <div class="level-card-top">
+              <span class="level-badge">중학생</span>
+              <span class="level-time-badge">⏱ 약 15분</span>
+            </div>
+            <h3 class="level-card-title">스마트시티 광통신망 설계자</h3>
+            <p class="level-card-subtitle">가중치 그래프 & 네트워크 효율성</p>
+            <p class="level-card-desc">
+              도시 거점들을 연결하는 초고속 통신망을 최소 예산으로 구축하세요. 간선 비용을 정렬하고 최소 신장 트리의 원리를 탐구합니다.
+            </p>
+            <ul class="level-card-features">
+              <li>오름차순 간선 정렬 큐(Queue) 직접 선택</li>
+              <li>예산 절감률에 따른 실시간 점수(100점 만점)</li>
+              <li>네트워크 루프(폐쇄 회로) 방지 개념 학습</li>
+            </ul>
+          </div>
+          <button class="btn btn-primary" tabindex="-1">중등 코스 시작하기</button>
+        </article>
+
+        <!-- High School Card -->
+        <article class="level-card" data-level="high" tabindex="0" role="button" aria-label="고등학생 코스 선택">
+          <div>
+            <div class="level-card-top">
+              <span class="level-badge">고등학생</span>
+              <span class="level-time-badge">⏱ 약 15~18분</span>
+            </div>
+            <h3 class="level-card-title">분산 시스템 MST 알고리즘 연구원</h3>
+            <p class="level-card-subtitle">그리디 정당성 & 시간제한 시뮬레이터</p>
+            <p class="level-card-desc">
+              복잡한 8-노드 토폴로지에서 90초 타이머 내에 O(E log E) 그리디 전략을 완수하고, 대입 학생부용 심화 탐구 주제 3종을 확인하세요.
+            </p>
+            <ul class="level-card-features">
+              <li>Disjoint-Set (Union-Find) 수학적 사이클 판별</li>
+              <li>90초 제한 시간 긴장감 높은 실전 시뮬레이션</li>
+              <li>학생부 세특/진로활동 심화 보고서 주제 3종 제공</li>
+            </ul>
+          </div>
+          <button class="btn btn-primary" tabindex="-1">고등 코스 시작하기</button>
+        </article>
+      </section>
+    </main>
+
+    <!-- [View 2] Interactive Workspace (3단계 활동 화면) -->
+    <main id="workspace-view" style="display: none;">
+      <!-- Step Navigation (Progress Bar) -->
+      <nav class="stepper-nav" aria-label="학습 단계">
+        <button class="step-item active" data-step="concept">
+          <span class="step-badge">1</span>
+          <span>개념 설명</span>
+        </button>
+        <span style="color: var(--color-border);">―</span>
+        <button class="step-item" data-step="example">
+          <span class="step-badge">2</span>
+          <span>예제 문제 풀이</span>
+        </button>
+        <span style="color: var(--color-border);">―</span>
+        <button class="step-item" data-step="mission">
+          <span class="step-badge">3</span>
+          <span>게이미피케이션 미션</span>
+        </button>
+      </nav>
+
+      <!-- 2-Column Responsive Workspace Grid -->
+      <div class="workspace-grid">
+        <!-- Left Column: Interactive SVG Graph Canvas -->
+        <section class="graph-card" aria-label="그래프 시각화 보드">
+          <div class="graph-header">
+            <div>
+              <span id="current-level-badge" class="level-badge">초등 레벨</span>
+              <strong id="header-level-title" style="margin-left: 8px; font-size: 14px;">활동 제목</strong>
+            </div>
+            <div class="graph-status-badge">
+              <span>●</span>
+              <span>인터랙티브 보드</span>
+            </div>
+          </div>
+
+          <div id="svg-canvas-wrapper" class="svg-canvas-wrapper">
+            <!-- Toast Alert for Success / Cycle Warning -->
+            <div id="canvas-alert" class="canvas-alert-box alert-info" role="alert" aria-live="assertive">
+              간선 또는 우측 표의 항목을 클릭하여 마을을 연결하세요!
+            </div>
+            <!-- SVG Interactive Graph Canvas -->
+            <svg id="graph-svg" class="graph-svg" viewBox="0 0 700 460" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+        </section>
+
+        <!-- Right Column: Control & Queue Panel -->
+        <aside class="control-panel" aria-label="알고리즘 조작 및 안내 패널">
+          <!-- Step Instruction Card -->
+          <article class="panel-card">
+            <header class="panel-header">
+              <h3 id="step-title" class="panel-title">개념 설명</h3>
+            </header>
+            <div class="panel-body">
+              <p id="step-description" style="white-space: pre-line; margin-bottom: 12px;">
+                가장 비용이 적게 드는 간선부터 차례대로 선택해 보세요.
+              </p>
+            </div>
+          </article>
+
+          <!-- Metrics Box -->
+          <section class="metrics-grid" aria-label="진행 상태 지표">
+            <div class="metric-item">
+              <span class="metric-label">연결된 간선 수</span>
+              <span id="metric-edges" class="metric-value">0 / 4</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">현재 누적 비용</span>
+              <span id="metric-weight" class="metric-value">0 (목표: 14)</span>
+            </div>
+          </section>
+
+          <!-- Sorted Edge Queue Card -->
+          <article id="edge-queue-container" class="panel-card">
+            <header class="panel-header">
+              <h4 class="panel-title" style="font-size: 13px;">가중치 오름차순 간선 리스트 (Greedy Queue)</h4>
+            </header>
+            <div class="edge-queue-table-wrapper">
+              <table class="edge-queue-table">
+                <thead>
+                  <tr>
+                    <th>순번</th>
+                    <th>연결 구간</th>
+                    <th>비용</th>
+                    <th>상태</th>
+                  </tr>
+                </thead>
+                <tbody id="edge-queue-body">
+                  <!-- Dynamically Rendered -->
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <!-- Control Action Buttons -->
+          <div style="display: flex; gap: 8px; flex-direction: column;">
+            <div style="display: flex; gap: 8px;">
+              <button id="hint-btn" class="btn btn-outline-info" style="flex: 1;">💡 탐욕 힌트</button>
+              <button id="reset-btn" class="btn btn-secondary" style="flex: 1;">↺ 다시 풀기</button>
+            </div>
+            <button id="next-step-btn" class="btn btn-primary" style="width: 100%;">예제 문제 풀기 →</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Modal Dialog for Mission Completion & Career Topics -->
+    <div id="result-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <header class="modal-header">
+          <span class="modal-status-pill">MISSION SUCCESS</span>
+          <h2 id="modal-title">🎉 미션 클리어!</h2>
+        </header>
+        <div id="modal-body">
+          <!-- Dynamic Content -->
+        </div>
+        <footer style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+          <button id="modal-close-btn" class="btn btn-primary">확인 및 닫기</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Modal Dialog for General Concept Guide (📖 크루스칼 개념도감) -->
+    <div id="intro-concept-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="concept-modal-title">
+      <div class="modal-card" style="max-width: 720px;">
+        <header class="modal-header">
+          <span class="modal-status-pill" style="background-color: var(--color-ikea-blue);">ALGORITHM GUIDE</span>
+          <h2 id="concept-modal-title">📖 [크루스칼의 마법] 낭비제로(0) 네트워크 원리 도감</h2>
+        </header>
+        <div class="modal-body" style="font-size: var(--font-size-sm); color: var(--color-text-main); line-height: 1.6;">
+          <div style="background-color: var(--color-canvas-subtle); padding: 16px; border-left: 4px solid var(--color-primary); margin-bottom: 16px;">
+            <h3 style="font-size: 16px; margin-bottom: 6px;">🧙‍♂️ 크루스칼 알고리즘(Kruskal's Algorithm)이란?</h3>
+            <p>
+              1956년 수학자 <strong>조셉 크루스칼(Joseph Kruskal)</strong>이 고안한 '최소 신장 트리(MST)' 알고리즘입니다.<br>
+              네트워크의 모든 지점(노드)을 연결하되, <strong>가장 적은 비용의 길만 골라 중복과 낭비(사이클)를 0으로 만드는 마법</strong> 같은 최적화 공식입니다.
+            </p>
+          </div>
+
+          <h4 style="margin-bottom: 10px; font-size: 15px;">⚡ 3대 핵심 마법 공식 (원리)</h4>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+            <div style="background: white; border: 1px solid var(--color-border); padding: 12px; border-radius: 6px;">
+              <strong style="color: var(--color-text-strong);">① 짠돌이 탐욕 선택 (Greedy Choice)</strong>
+              <p style="margin-top: 4px; font-size: 13px;">건설 비용이 가장 저렴한 길부터 작은 숫자 순서대로(오름차순) 하나씩 검토하여 연결합니다.</p>
+            </div>
+            <div style="background: white; border: 1px solid var(--color-border); padding: 12px; border-radius: 6px;">
+              <strong style="color: var(--color-status-error);">② 빙글빙글 루프(사이클) 차단 (Cycle Avoidance)</strong>
+              <p style="margin-top: 4px; font-size: 13px;">이미 갈 수 있는 길 사이에 또 길을 놓으면 중복 낭비(사이클)예요! 발견 즉시 과감하게 버립니다.</p>
+            </div>
+            <div style="background: white; border: 1px solid var(--color-border); padding: 12px; border-radius: 6px;">
+              <strong style="color: var(--color-status-success);">③ 정점 - 1개로 완성 (V - 1 Edges)</strong>
+              <p style="margin-top: 4px; font-size: 13px;">정점(마을)이 N개라면 필요한 길은 정확히 <strong>N - 1개</strong>입니다. 단 하나의 군더더기도 없는 절대적 최적화!</p>
+            </div>
+          </div>
+
+          <h4 style="margin-bottom: 10px; font-size: 15px;">🌐 실생활 속 어디에 쓰일까요?</h4>
+          <ul style="padding-left: 20px; font-size: 13px; margin-bottom: 12px;">
+            <li style="margin-bottom: 4px;"><strong>한국전력 전국 송전탑망:</strong> 고압 전력선의 불필요한 중복 가설을 막아 수조 원의 예산 절감</li>
+            <li style="margin-bottom: 4px;"><strong>해저 광케이블 & 5G 통신망:</strong> 신호가 폐쇄 회로를 돌며 충돌하는 '브로드캐스트 스톰' 원천 차단</li>
+            <li style="margin-bottom: 4px;"><strong>상수도 배관망 및 고속도로망:</strong> 최소 굴착 공사비로 모든 가정과 도시에 수도/도로 연결</li>
+          </ul>
+        </div>
+        <footer style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+          <button id="intro-concept-close-btn" class="btn btn-primary">닫고 체험 시작하기</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/disjoint-set.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/graph-data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
