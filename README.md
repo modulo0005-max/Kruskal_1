@@ -61,25 +61,28 @@
 
 외부 라이브러리(CDN, npm 등)에 의존하지 않는 **순수 웹 표준 기술(Vanilla Web Tech)**로 작성되어 있어, 브라우저만 있으면 어디서나 즉시 실행 가능합니다.
 
+### 🌐 온라인 데모 (Live Deployment)
+- **배포 주소:** [https://modulo0005-max.github.io/Kruskal_1/](https://modulo0005-max.github.io/Kruskal_1/)
+
 ### 로컬 실행
 1. 저장소를 클론합니다:
    ```bash
-   git clone https://github.com/<YOUR-USERNAME>/<YOUR-REPO-NAME>.git
-   cd <YOUR-REPO-NAME>
+   git clone https://github.com/modulo0005-max/Kruskal_1.git
+   cd Kruskal_1
    ```
 2. `index.html` 파일을 더블 클릭하여 실행하거나, VS Code 등의 `Live Server`로 실행합니다.
 
 ---
 
-## 🌐 GitHub Pages 무료 배포 가이드 (1분 완성)
+## 🌐 GitHub Pages 배포 설정 (1분 완성)
 
-이 프로젝트는 정적 웹사이트이므로 **GitHub Pages**를 통해 누구나 접속 가능한 웹사이트로 즉시 배포할 수 있습니다:
+이 프로젝트는 `.github/workflows/deploy.yml`을 통해 **GitHub Actions 자동 배포 파이프라인**이 구축되어 있습니다.
 
-1. 본인 GitHub 저장소 페이지 상단의 **Settings** 메뉴로 이동합니다.
-2. 좌측 사이드바에서 **Pages**를 클릭합니다.
-3. **Build and deployment** 섹션의 Source를 `Deploy from a branch`로 선택합니다.
-4. Branch를 `main` (또는 master) / `/ (root)`로 지정하고 **Save**를 누릅니다.
-5. 1~2분 후 생성되는 공개 URL(`https://<아이디>.github.io/<저장소명>/`)로 접속하면 전 세계 어디서든 체험할 수 있습니다!
+1. GitHub 저장소([https://github.com/modulo0005-max/Kruskal_1](https://github.com/modulo0005-max/Kruskal_1)) 페이지 상단의 **Settings** 메뉴로 이동합니다.
+2. 좌측 메뉴에서 **Pages**를 클릭합니다.
+3. **Build and deployment** 섹션의 **Source**를 **`GitHub Actions`**로 선택합니다.
+   *(기존 `Deploy from a branch` 방식도 가능하며, 이때는 Branch를 `main` / `/ (root)`로 선택하고 Save를 누르면 됩니다)*
+4. 설정 즉시 자동으로 배포가 시작되며, 약 1분 후 생성되는 공개 URL([https://modulo0005-max.github.io/Kruskal_1/](https://modulo0005-max.github.io/Kruskal_1/))로 접속할 수 있습니다!
 
 ---
 
