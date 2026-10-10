@@ -288,4 +288,106 @@ const HIGH_SCHOOL_CAREER_TOPICS = [
 if (typeof window !== "undefined") {
   window.GRAPH_DATA = GRAPH_DATA;
   window.HIGH_SCHOOL_CAREER_TOPICS = HIGH_SCHOOL_CAREER_TOPICS;
+  window.solveKruskal = solveKruskal;
+  window.generateRandomizedGraph = generateRandomizedGraph;
+}
+
+/**
+ * Kruskal Solver Engine
+ * Calculates the exact Minimum Spanning Tree (MST) and minimum weight sum for any given graph.
+ * @param {Array<{id: number, label: string, x: number, y: number}>} nodes
+ * @param {Array<{id: string, u: number, v: number, weight: number}>} edges
+ * @returns {{ mstEdges: string[], mstWeight: number, isConnected: boolean }}
+ */
+function solveKruskal(nodes, edges) {
+  const DS = (typeof DisjointSet !== 'undefined') ? DisjointSet 
+           : (typeof window !== 'undefined' && window.DisjointSet) ? window.DisjointSet 
+           : (typeof global !== 'undefined' && global.DisjointSet) ? global.DisjointSet : null;
+
+  if (!DS) {
+    throw new Error('DisjointSet class is required to run Kruskal Solver.');
+  }
+
+  const ds = new DS(nodes.length);
+  // Sort edges ascending by weight (Greedy selection property)
+  const sortedEdges = [...edges].sort((a, b) => a.weight - b.weight);
+
+  const mstEdges = [];
+  let mstWeight = 0;
+
+  for (const edge of sortedEdges) {
+    if (ds.union(edge.u, edge.v)) {
+      mstEdges.push(edge.id);
+      mstWeight += edge.weight;
+      if (mstEdges.length === nodes.length - 1) {
+        break;
+      }
+    }
+  }
+
+  return {
+    mstEdges,
+    mstWeight,
+    isConnected: mstEdges.length === nodes.length - 1
+  };
+}
+
+/**
+ * Dynamic Problem Generator
+ * Retains node coordinates and edge topology (u, v),
+ * while assigning unique random weights and dynamically computing the exact MST solution.
+ * @param {'elementary' | 'middle' | 'high'} level
+ * @param {'concept' | 'example' | 'mission'} step
+ * @returns {Object} Deep-cloned step data with newly randomized weights and verified MST
+ */
+function generateRandomizedGraph(level, step) {
+  const levelData = GRAPH_DATA[level];
+  if (!levelData || !levelData[step]) {
+    throw new Error(`Invalid level or step: ${level}, ${step}`);
+  }
+
+  const originalData = levelData[step];
+
+  // Concept step retains its fixed textbook weights for pedagogical narrative
+  if (step === 'concept') {
+    return JSON.parse(JSON.stringify(originalData));
+  }
+
+  // Deep clone to prevent mutating original template
+  const cloned = JSON.parse(JSON.stringify(originalData));
+  const numEdges = cloned.edges.length;
+
+  // Level-specific distinct weight pools to guarantee MST uniqueness
+  let weightPool = [];
+  if (level === 'elementary') {
+    // 1 to (numEdges + 6) -> e.g., 1~13
+    weightPool = Array.from({ length: numEdges + 6 }, (_, i) => i + 1);
+  } else if (level === 'middle') {
+    // 3 to (numEdges + 10) in increments
+    weightPool = Array.from({ length: numEdges + 10 }, (_, i) => i + 3);
+  } else {
+    // High school: 2 to (numEdges + 14)
+    weightPool = Array.from({ length: numEdges + 14 }, (_, i) => i + 2);
+  }
+
+  // Fisher-Yates Shuffle
+  for (let i = weightPool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [weightPool[i], weightPool[j]] = [weightPool[j], weightPool[i]];
+  }
+
+  // Assign distinct weights to each edge
+  cloned.edges.forEach((edge, idx) => {
+    edge.weight = weightPool[idx];
+    if (edge.desc) {
+      delete edge.desc; // remove hardcoded static description
+    }
+  });
+
+  // Dynamically compute exact MST using Kruskal algorithm
+  const solution = solveKruskal(cloned.nodes, cloned.edges);
+  cloned.mstEdges = solution.mstEdges;
+  cloned.mstWeight = solution.mstWeight;
+
+  return cloned;
 }

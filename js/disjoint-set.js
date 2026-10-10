@@ -94,6 +94,9 @@ class DisjointSet {
 }
 
 // Export for module or global use
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = DisjointSet;
+}
 if (typeof window !== "undefined") {
   window.DisjointSet = DisjointSet;
 }

@@ -145,6 +145,18 @@ h4 { font-size: var(--font-size-md); }
   background-color: var(--color-ikea-blue-light);
 }
 
+/* Warning/Randomize Button: For generating dynamic problems */
+.btn-warning {
+  background-color: var(--color-ikea-yellow-subtle);
+  color: var(--color-text-strong);
+  border: 1px solid #c9a700;
+  font-weight: 700;
+}
+.btn-warning:hover {
+  background-color: var(--color-ikea-yellow);
+  border-color: var(--color-text-strong);
+}
+
 .btn-sm {
   padding: 6px 16px;
   font-size: var(--font-size-xs);

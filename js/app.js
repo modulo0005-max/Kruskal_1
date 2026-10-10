@@ -40,6 +40,7 @@ class KruskalApp {
       edgeQueueTableBody: document.getElementById('edge-queue-body'),
       hintBtn: document.getElementById('hint-btn'),
       resetBtn: document.getElementById('reset-btn'),
+      newProblemBtn: document.getElementById('new-problem-btn'),
       nextStepBtn: document.getElementById('next-step-btn'),
       resultModal: document.getElementById('result-modal'),
       modalTitle: document.getElementById('modal-title'),
@@ -105,6 +106,14 @@ class KruskalApp {
       window.soundManager.play('click');
       this.resetCurrentStep();
     });
+
+    // New problem generator button
+    if (this.dom.newProblemBtn) {
+      this.dom.newProblemBtn.addEventListener('click', () => {
+        window.soundManager.play('select');
+        this.generateNewProblem();
+      });
+    }
 
     // Hint button (Greedy suggestion)
     this.dom.hintBtn.addEventListener('click', () => {
@@ -173,9 +182,13 @@ class KruskalApp {
       }
     });
 
-    // Load active step graph specification
-    const levelConfig = window.GRAPH_DATA[this.currentLevel];
-    this.activeData = levelConfig[step];
+    // Load active step graph specification (Randomize weights for Example & Mission)
+    if (step === 'example' || step === 'mission') {
+      this.activeData = window.generateRandomizedGraph(this.currentLevel, step);
+    } else {
+      const levelConfig = window.GRAPH_DATA[this.currentLevel];
+      this.activeData = JSON.parse(JSON.stringify(levelConfig[step]));
+    }
 
     // Update instruction panels
     this.dom.stepTitle.textContent = this.activeData.headline;
@@ -191,6 +204,21 @@ class KruskalApp {
 
     // Reset algorithm state
     this.resetCurrentStep();
+  }
+
+  /**
+   * Generate a brand-new randomized problem by re-weighting edges
+   * and dynamically calculating the new MST solution.
+   */
+  generateNewProblem() {
+    if (this.currentStep === 'concept') {
+      this.showAlert('개념 설명 단계는 기본 교과서 예시입니다. [예제 문제] 또는 [미션] 단계에서 새로운 문제를 생성할 수 있습니다.', 'alert-info');
+      return;
+    }
+
+    this.activeData = window.generateRandomizedGraph(this.currentLevel, this.currentStep);
+    this.resetCurrentStep();
+    this.showAlert('🎲 새로운 가중치의 문제가 생성되었습니다! 정렬된 간선 큐를 확인하고 도전해보세요.', 'alert-success');
   }
 
   resetCurrentStep() {
